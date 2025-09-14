@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <title>عيد ميلاد ملك 🎂</title>
+  <style>
+    body {
+      font-family: 'Cairo', sans-serif;
+      text-align: center;
+      background: linear-gradient(to right, #ffdde1, #ee9ca7);
+      color: #333;
+      height: 100vh;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+    }
+    #countdown {
+      font-size: 2rem;
+      background: #fff;
+      padding: 15px 30px;
+      border-radius: 20px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.2);
+      margin-bottom: 20px;
+    }
+    #message {
+      font-size: 2.2rem;
+      font-weight: bold;
+      color: #e60073;
+      display: none;
+      margin-top: 20px;
+    }
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+  <h1>🎂</h1>
+  <div id="countdown"></div>
+  <div id="message">كل سنة وأنتِ طيبة يا ملك 🎉🎂💖</div>
+  <canvas id="confetti"></canvas>
+  
+  <!-- موسيقى عيد الميلاد -->
+  <audio id="birthdaySong" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"></audio>
+
+  <script>
+    const birthday = new Date("Sep 18, " + (new Date().getMonth() > 8 || (new Date().getMonth() === 8 && new Date().getDate() > 18) ? new Date().getFullYear()+1 : new Date().getFullYear()) + " 00:00:00").getTime();
+
+    const countdownEl = document.getElementById("countdown");
+    const messageEl = document.getElementById("message");
+    const canvas = document.getElementById("confetti");
+    const ctx = canvas.getContext("2d");
+    const birthdaySong = document.getElementById("birthdaySong");
+
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    let confetti = [];
+
+    function renderConfetti() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      confetti.forEach((c, i) => {
+        c.y += c.speed;
+        c.x += Math.sin(c.angle) * 2;
+        ctx.fillStyle = c.color;
+        ctx.beginPath();
+        ctx.arc(c.x, c.y, c.size, 0, 2 * Math.PI);
+        ctx.fill();
+        if (c.y > canvas.height) confetti.splice(i, 1);
+      });
+      requestAnimationFrame(renderConfetti);
+    }
+
+    function startConfetti() {
+      setInterval(() => {
+        confetti.push({
+          x: Math.random() * canvas.width,
+          y: -10,
+          size: Math.random() * 8 + 2,
+          color: `hsl(${Math.random() * 360}, 100%, 50%)`,
+          speed: Math.random() * 4 + 2,
+          angle: Math.random() * 2
+        });
+      }, 50);
+      renderConfetti();
+    }
+
+    const timer = setInterval(() => {
+      const now = new Date().getTime();
+      const distance = birthday - now;
+
+      if (distance < 0) {
+        clearInterval(timer);
+        countdownEl.style.display = "none";
+        messageEl.style.display = "block";
+        startConfetti();
+        birthdaySong.play(); // تشغيل الموسيقى
+        return;
+      }
+
+      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+      countdownEl.innerHTML = `${days} Day - ${hours} Hours - ${minutes} Minutes - ${seconds} Seconds`;
+    }, 1000);
+  </script>
+</body>
+</html>

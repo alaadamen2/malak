@@ -73,9 +73,6 @@
   <div id="countdown"></div>
   <div id="message"></div>
   <canvas id="confetti"></canvas>
-  
-  <!-- موسيقى عيد الميلاد -->
-  <audio id="birthdaySong" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"></audio>
 
   <script>
     // حساب تاريخ عيد الميلاد
@@ -88,7 +85,6 @@
     const messageEl = document.getElementById("message");
     const canvas = document.getElementById("confetti");
     const ctx = canvas.getContext("2d");
-    const birthdaySong = document.getElementById("birthdaySong");
 
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
@@ -161,7 +157,6 @@
         clearInterval(timer);
         countdownEl.style.display = "none";
         startConfetti();
-        birthdaySong.play();
         showMessage();
         return;
       }
